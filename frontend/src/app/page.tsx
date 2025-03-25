@@ -1,6 +1,6 @@
 export default function Home() {
   return (
-    <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start bg-greenBackgroundTransparent">
+    <main className="flex min-h-screen flex-col items-center justify-between p-24">
       landing page
     </main>
   );
