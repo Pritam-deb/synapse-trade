@@ -2,6 +2,7 @@
 import { useParams } from "next/navigation";
 import { MarketBar } from "@/app/components/MarketBar";
 import { TradeView } from "@/app/components/TradeView";
+import { Depth } from "@/app/components/depth/Depth";
 
 export default function Page() {
   const { market } = useParams();
@@ -15,8 +16,7 @@ export default function Page() {
           </div>
           <div className="w-[1px] flex-col border-slate-800 border-l"></div>
           <div className="flex flex-col w-[250px] overflow-hidden flex-1">
-            {/* <Depth market={market as string} /> */}
-            orderbook
+            <Depth market={market as string} />
           </div>
         </div>
       </div>
