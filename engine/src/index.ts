@@ -8,12 +8,12 @@ async function main() {
     while (true) {
         const message = await redisClient.lPop("messages" as string);
         if (!message) {
-            console.log("No message in queue");
+            // console.log("No message in queue");
             await new Promise(resolve => setTimeout(resolve, 10000));
             continue;
         } else {
             const parsedMessage = JSON.parse(message);
-            console.log("Received message:", parsedMessage);
+            // console.log("Received message:", parsedMessage);
             const { clientId, message: msg } = parsedMessage;
             const { type, data } = msg;
             // console.log("Type:", type);

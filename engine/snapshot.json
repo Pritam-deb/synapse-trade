@@ -4,9 +4,25 @@
       "baseAsset": "USDC",
       "bids": [
         {
+          "price": 0.9999,
+          "quantity": 1000,
+          "orderId": "buyorder3",
+          "filled": 0,
+          "side": "buy",
+          "userId": "5"
+        },
+        {
           "price": 0.9998,
           "quantity": 500,
           "orderId": "buyorder1",
+          "filled": 0,
+          "side": "buy",
+          "userId": "1"
+        },
+        {
+          "price": 0.9997,
+          "quantity": 250,
+          "orderId": "buyorder4",
           "filled": 0,
           "side": "buy",
           "userId": "1"
@@ -20,20 +36,20 @@
           "userId": "2"
         },
         {
-          "price": 0.9999,
-          "quantity": 1000,
-          "orderId": "buyorder3",
+          "price": 0.9995,
+          "quantity": 700,
+          "orderId": "buyorder5",
           "filled": 0,
           "side": "buy",
-          "userId": "5"
+          "userId": "3"
         },
         {
-          "price": 0.9997,
-          "quantity": 250,
-          "orderId": "buyorder4",
+          "price": 0.9994,
+          "quantity": 600,
+          "orderId": "buyorder6",
           "filled": 0,
           "side": "buy",
-          "userId": "1"
+          "userId": "4"
         }
       ],
       "asks": [
@@ -60,9 +76,25 @@
           "filled": 0,
           "side": "sell",
           "userId": "1"
+        },
+        {
+          "price": 1.0004,
+          "quantity": 1000,
+          "orderId": "sellorder4",
+          "filled": 0,
+          "side": "sell",
+          "userId": "4"
+        },
+        {
+          "price": 1.0005,
+          "quantity": 450,
+          "orderId": "sellorder5",
+          "filled": 0,
+          "side": "sell",
+          "userId": "3"
         }
       ],
-      "lastTradeId": 223,
+      "lastTradeId": 230,
       "currentPrice": 1.0
     }
   ],
@@ -79,6 +111,20 @@
       {
         "INR": { "available": 2000000, "locked": 250000 },
         "USDC": { "available": 1500, "locked": 800 }
+      }
+    ],
+    [
+      "3",
+      {
+        "INR": { "available": 1500000, "locked": 100000 },
+        "USDC": { "available": 2200, "locked": 700 }
+      }
+    ],
+    [
+      "4",
+      {
+        "INR": { "available": 1000000, "locked": 75000 },
+        "USDC": { "available": 1800, "locked": 1000 }
       }
     ],
     [
