@@ -1,0 +1,92 @@
+{
+  "orderbooks": [
+    {
+      "baseAsset": "USDC",
+      "bids": [
+        {
+          "price": 0.9998,
+          "quantity": 500,
+          "orderId": "buyorder1",
+          "filled": 0,
+          "side": "buy",
+          "userId": "1"
+        },
+        {
+          "price": 0.9996,
+          "quantity": 300,
+          "orderId": "buyorder2",
+          "filled": 0,
+          "side": "buy",
+          "userId": "2"
+        },
+        {
+          "price": 0.9999,
+          "quantity": 1000,
+          "orderId": "buyorder3",
+          "filled": 0,
+          "side": "buy",
+          "userId": "5"
+        },
+        {
+          "price": 0.9997,
+          "quantity": 250,
+          "orderId": "buyorder4",
+          "filled": 0,
+          "side": "buy",
+          "userId": "1"
+        }
+      ],
+      "asks": [
+        {
+          "price": 1.0001,
+          "quantity": 500,
+          "orderId": "sellorder1",
+          "filled": 0,
+          "side": "sell",
+          "userId": "2"
+        },
+        {
+          "price": 1.0002,
+          "quantity": 800,
+          "orderId": "sellorder2",
+          "filled": 0,
+          "side": "sell",
+          "userId": "5"
+        },
+        {
+          "price": 1.0003,
+          "quantity": 150,
+          "orderId": "sellorder3",
+          "filled": 0,
+          "side": "sell",
+          "userId": "1"
+        }
+      ],
+      "lastTradeId": 223,
+      "currentPrice": 1.0
+    }
+  ],
+  "balances": [
+    [
+      "1",
+      {
+        "INR": { "available": 5000000, "locked": 100000 },
+        "USDC": { "available": 2000, "locked": 500 }
+      }
+    ],
+    [
+      "2",
+      {
+        "INR": { "available": 2000000, "locked": 250000 },
+        "USDC": { "available": 1500, "locked": 800 }
+      }
+    ],
+    [
+      "5",
+      {
+        "INR": { "available": 100000, "locked": 20000 },
+        "USDC": { "available": 10000, "locked": 2000 }
+      }
+    ]
+  ]
+}
