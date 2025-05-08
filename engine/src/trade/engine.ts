@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { GET_DEPTH, MessageFromApi } from "../types/fromApi";
+import { GET_DEPTH, GET_OPEN_ORDERS, MessageFromApi } from "../types/fromApi";
 import { RedisManager } from "../RedisManager";
 import { Orderbook } from './orderbook';
 
@@ -49,6 +49,20 @@ export class Engine {
 
     process({ clientId, message }: { clientId: string, message: MessageFromApi }) {
         switch (message.type) {
+            case GET_OPEN_ORDERS: {
+                try {
+                    const {market} = message.data;
+                    const openorderbook = this.orderbooks.find(o=>o.ticker()===market);
+                    if(!openorderbook) throw new Error("No orderbooks found");
+                    const openOrders = openorderbook.getOpenOrders(message.data.userId)
+                    RedisManager.getInstance().sendToApi(clientId, {
+                        type: "OPEN_ORDERS",
+                        payload: openOrders,
+                    })
+                } catch (error) {
+                    console.error("Error processing message:", error);
+                }
+            }
             case GET_DEPTH: {
                 try {
                     const { market } = message.data;
