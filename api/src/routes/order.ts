@@ -1,10 +1,10 @@
 import { RedisManager } from "../RedisManager";
 import { Router } from "express";
-import { GET_OPEN_ORDERS } from "../types";
+import { GET_OPEN_ORDERS, CREATE_ORDER } from "../types";
 
 export const orderRouter = Router();
 
-orderRouter.get("/open",async (req, res)=>{
+orderRouter.get("/open", async (req, res) => {
     const response = await RedisManager.getInstance().sendAndAwait({
         type: GET_OPEN_ORDERS,
         data: {
@@ -14,3 +14,18 @@ orderRouter.get("/open",async (req, res)=>{
     });
     res.json(response.payload)
 })
+
+orderRouter.post("/create", async (req, res) => {
+    const { market, side, price, quantity, userId } = req.body;
+    const response = await RedisManager.getInstance().sendAndAwait({
+        type: CREATE_ORDER,
+        data: {
+            market,
+            side,
+            price,
+            quantity,
+            userId,
+        }
+    });
+    res.json(response.payload);
+});
