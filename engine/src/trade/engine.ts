@@ -148,7 +148,7 @@ export class Engine {
         }
         const baseAsset = market.split("_")[0];
         const quoteAsset = market.split("_")[1];
-
+        console.log("Creating order", market, side, price, quantity, userId);
         this.checkAndLockFunds(
             userId,
             baseAsset,
@@ -184,14 +184,14 @@ export class Engine {
         const quoteAssetBalance = userBalance?.[quoteAsset] || { locked: 0, available: 0 };
 
         if (side === 'buy') {
-            console.log("buying", baseAsset, quoteAsset, price, quantity);
+            // console.log("buying", baseAsset, quoteAsset, price, quantity);
             if (quoteAssetBalance.available < price * quantity) {
                 throw new Error("Insufficient funds");
             }
             quoteAssetBalance.available -= price * quantity;
             quoteAssetBalance.locked += price * quantity;
         } else {
-            console.log("selling", baseAsset, quoteAsset, price, quantity);
+            // console.log("selling", baseAsset, quoteAsset, price, quantity);
             if (baseAssetBalance.available < quantity) {
                 throw new Error("Insufficient funds");
             }
@@ -213,8 +213,8 @@ export class Engine {
                 this.balances.get(fill.otherUserId)[baseAsset].locked -= fill.qty;
                 // @ts-ignore
                 this.balances.get(userId)[baseAsset].available += fill.qty;
-                console.log("buying other user balance", this.balances.get(fill.otherUserId));
-                console.log("buying user balance", this.balances.get(userId));
+                // console.log("buying other user balance", this.balances.get(fill.otherUserId));
+                // console.log("buying user balance", this.balances.get(userId));
             })
         } else {
             fills.forEach(fill => {
@@ -228,8 +228,8 @@ export class Engine {
                 this.balances.get(fill.otherUserId)[quoteAsset].locked -= fill.price * fill.qty;
                 // @ts-ignore
                 this.balances.get(userId)[quoteAsset].available += fill.price * fill.qty;
-                console.log("selling other user balance", this.balances.get(fill.otherUserId));
-                console.log("selling user balance", this.balances.get(userId));
+                // console.log("selling other user balance", this.balances.get(fill.otherUserId));
+                // console.log("selling user balance", this.balances.get(userId));
             })
         }
     }
