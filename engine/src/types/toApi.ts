@@ -40,4 +40,16 @@ export type MessageToApi =
             orderId: string,
             reason: string,
         }
+    } |
+    {
+        type: "USER_BALANCE_FETCHED",
+        payload: {
+            userId: string,
+            balance: {
+                [key: string]: {
+                    available: number,
+                    locked: number
+                }
+            }
+        }
     }

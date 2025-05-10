@@ -1,4 +1,4 @@
-import { CREATE_ORDER, GET_DEPTH, GET_OPEN_ORDERS } from ".";
+import { CREATE_ORDER, GET_DEPTH, GET_OPEN_ORDERS, USER_BALANCE  } from ".";
 
 export type MessageToEngine =
     {
@@ -21,6 +21,12 @@ export type MessageToEngine =
             side: 'buy' | 'sell',
             price: string,
             quantity: string,
+            userId: string,
+        }
+    } |
+    {
+        type: typeof USER_BALANCE,
+        data: {
             userId: string,
         }
     }

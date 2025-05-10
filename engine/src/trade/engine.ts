@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { CREATE_ORDER, GET_DEPTH, GET_OPEN_ORDERS, MessageFromApi } from "../types/fromApi";
+import { CREATE_ORDER, GET_DEPTH, GET_OPEN_ORDERS, MessageFromApi, USER_BALANCE } from "../types/fromApi";
 import { RedisManager } from "../RedisManager";
 import { Fill, Order, Orderbook } from './orderbook';
 
@@ -116,6 +116,30 @@ export class Engine {
                 }
             }
             break;
+            case USER_BALANCE: {
+                try {
+                    const { userId } = message.data;
+                    const userBalance = this.balances.get(userId);
+            
+                    if (!userBalance) {
+                        throw new Error("User not found");
+                    }
+            
+                    console.log("userBalance", userBalance);
+                    
+                    const finalBalance = userBalance[1] || { available: 0, locked: 0 };
+                    console.log("userBalance", finalBalance);
+                    RedisManager.getInstance().sendToApi(clientId, {
+                        type: "USER_BALANCE_FETCHED",
+                        payload: {
+                            userId,
+                            balance: finalBalance
+                        }
+                    } as any); // use proper typing later
+                } catch (error) {
+                    console.error("Error processing message:", error);
+                }
+            }
         }
     }
 
