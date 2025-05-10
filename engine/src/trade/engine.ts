@@ -124,11 +124,8 @@ export class Engine {
                     if (!userBalance) {
                         throw new Error("User not found");
                     }
-            
-                    console.log("userBalance", userBalance);
-                    
+                                
                     const finalBalance = userBalance[1] || { available: 0, locked: 0 };
-                    console.log("userBalance", finalBalance);
                     RedisManager.getInstance().sendToApi(clientId, {
                         type: "USER_BALANCE_FETCHED",
                         payload: {
