@@ -1,1 +1,139 @@
-{"orderbooks":[{"baseAsset":"USDC","bids":[{"price":1002,"quantity":200,"filled":0,"side":"buy","userId":"5","orderId":"dalg8o5k6qo4qwux5pcia"},{"price":1001.5,"quantity":100,"filled":0,"side":"buy","userId":"1","orderId":"u5oubcy3yftcji1a78ttb"},{"price":1001.4,"quantity":200,"filled":0,"side":"buy","userId":"1","orderId":"lamvmazgapkxess1nrd5a"},{"price":1001.2,"quantity":500,"filled":0,"side":"buy","userId":"1","orderId":"pg93x3tn11g4mgu13k99rc"}],"asks":[{"price":1002.7,"quantity":700,"filled":0,"side":"sell","userId":"2","orderId":"idljs41rf97oazrfhjfrj"},{"price":1002.8,"quantity":700,"filled":200,"side":"sell","userId":"2","orderId":"7a3j68ulq77ay19orcsdyf"},{"price":1002.8,"quantity":100,"filled":0,"side":"sell","userId":"1","orderId":"3cyawb9ryru3i52ef9fgvi"},{"price":1003,"quantity":500,"filled":0,"side":"sell","userId":"2","orderId":"g0jb8rnu3rw0f1ytzo4u"},{"price":1003.1,"quantity":400,"filled":0,"side":"sell","userId":"2","orderId":"npjaom7yff2tdsvapp8lf"},{"price":1003.7,"quantity":600,"filled":0,"side":"sell","userId":"2","orderId":"zc1ul6nauhll4lqzxj1xr"},{"price":1003.8,"quantity":600,"filled":0,"side":"sell","userId":"2","orderId":"xooldpy15ldjx4at8lfejj"},{"price":1004,"quantity":500,"filled":0,"side":"sell","userId":"5","orderId":"ahi6ydq3pfotrzl02yfoqk"},{"price":1004.1,"quantity":300,"filled":0,"side":"sell","userId":"1","orderId":"lwnkln1zxbgr1osz45pzgf"},{"price":1004.2,"quantity":300,"filled":0,"side":"sell","userId":"5","orderId":"bhdx5icms9cms9utl5trc"},{"price":1004.3,"quantity":200,"filled":0,"side":"sell","userId":"2","orderId":"mojo43q7wh0xaulspa5trb"},{"price":1004.4,"quantity":500,"filled":0,"side":"sell","userId":"1","orderId":"2kk02r0yij57022xumnn5"},{"price":1004.4,"quantity":900,"filled":0,"side":"sell","userId":"5","orderId":"46bn0x1stvqdws3ergi9f"},{"price":1004.5,"quantity":500,"filled":0,"side":"sell","userId":"1","orderId":"2jpfy0vvgjn9dclp1qdseu"},{"price":1004.6,"quantity":100,"filled":0,"side":"sell","userId":"2","orderId":"zzw5c3qupxfzpx9xgvlvt"},{"price":1004.6,"quantity":700,"filled":0,"side":"sell","userId":"5","orderId":"2retd56sfvsh4krp71d1q"},{"price":1004.7,"quantity":200,"filled":0,"side":"sell","userId":"2","orderId":"beour54vrmva1qynsxejj"},{"price":1004.8,"quantity":500,"filled":0,"side":"sell","userId":"5","orderId":"x70b16celvpjkv6soue4"},{"price":1005.2,"quantity":900,"filled":0,"side":"sell","userId":"2","orderId":"d0sl8uvgnbgn16xulac299"},{"price":1005.2,"quantity":400,"filled":0,"side":"sell","userId":"5","orderId":"vyycvtpqxxbabrzt15typ8"},{"price":1007.7,"quantity":600,"filled":0,"side":"sell","userId":"1","orderId":"4tlyh236nykuns5s0jdqk"},{"price":1007.8,"quantity":800,"filled":0,"side":"sell","userId":"2","orderId":"lucthav5bshoe0snjereh"},{"price":1007.8,"quantity":100,"filled":0,"side":"sell","userId":"5","orderId":"hzf9n71bipv43l9xt348y6"},{"price":1008,"quantity":600,"filled":0,"side":"sell","userId":"1","orderId":"x5km22dfyijcdm4zi82u94"},{"price":1008.3,"quantity":300,"filled":0,"side":"sell","userId":"5","orderId":"m9inhgpivxjuj9v44bt8xm"},{"price":1008.3,"quantity":900,"filled":0,"side":"sell","userId":"5","orderId":"o2o1j2v9fupn5bmcpcrg5"},{"price":1008.5,"quantity":600,"filled":0,"side":"sell","userId":"1","orderId":"g33rms1gl8ee0x0926129j"},{"price":1008.5,"quantity":900,"filled":0,"side":"sell","userId":"2","orderId":"rvltp87cs2fdxqrpju6nvc"},{"price":1008.6,"quantity":400,"filled":0,"side":"sell","userId":"5","orderId":"3nbc8lwbrl4ffp6bdqm40j"},{"price":1008.6,"quantity":300,"filled":0,"side":"sell","userId":"2","orderId":"8ekuvmutsok77yffchufd"},{"price":1002.4,"quantity":500,"filled":200,"side":"sell","userId":"5","orderId":"tuq87m4kygkhisvd8d7i1l"}],"lastTradeId":19,"currentPrice":0}],"balances":{"1":{"INR":{"available":201360,"locked":801370},"USDC":{"available":996800,"locked":3200}},"2":{"INR":{"available":1398650,"locked":40},"USDC":{"available":992700,"locked":6900}},"5":{"INR":{"available":397940,"locked":200640},"USDC":{"available":994900,"locked":5500}}}}
+{
+  "orderbooks": [
+    {
+      "baseAsset": "USDC",
+      "bids": [
+        {
+          "price": 1001.9,
+          "quantity": 300,
+          "filled": 0,
+          "side": "buy",
+          "userId": "5",
+          "orderId": "amxa9kajguou8yu3sibka"
+        },
+        {
+          "price": 1001.9,
+          "quantity": 200,
+          "filled": 0,
+          "side": "buy",
+          "userId": "1",
+          "orderId": "8n6cba7585p6b5prrpxork"
+        },
+        {
+          "price": 1001.7,
+          "quantity": 300,
+          "filled": 0,
+          "side": "buy",
+          "userId": "2",
+          "orderId": "df3a8ajcagqh58y39q97h4"
+        },
+        {
+          "price": 1001.5,
+          "quantity": 100,
+          "filled": 0,
+          "side": "buy",
+          "userId": "1",
+          "orderId": "adhypon38eq6ojmobmvofa"
+        },
+        {
+          "price": 1001.5,
+          "quantity": 600,
+          "filled": 0,
+          "side": "buy",
+          "userId": "5",
+          "orderId": "xxraf1mhfa3nvwd2ow957"
+        },
+        {
+          "price": 1001.4,
+          "quantity": 400,
+          "filled": 0,
+          "side": "buy",
+          "userId": "1",
+          "orderId": "n265ge08ykp1jiq2tyf5d"
+        }
+      ],
+      "asks": [
+        {
+          "price": 1002.4,
+          "quantity": 500,
+          "filled": 0,
+          "side": "sell",
+          "userId": "2",
+          "orderId": "94xe6ann5na0ge0vfx5xqlt"
+        },
+        {
+          "price": 1002.5,
+          "quantity": 800,
+          "filled": 0,
+          "side": "sell",
+          "userId": "5",
+          "orderId": "z75r21k312oihifviur51g"
+        },
+        {
+          "price": 1002.7,
+          "quantity": 300,
+          "filled": 0,
+          "side": "sell",
+          "userId": "1",
+          "orderId": "54l5nq0764o2jxyart9rxn"
+        },
+        {
+          "price": 1002.9,
+          "quantity": 500,
+          "filled": 0,
+          "side": "sell",
+          "userId": "2",
+          "orderId": "u1aa4vyp6ihwc7m3o61mn"
+        },
+        {
+          "price": 1002.9,
+          "quantity": 900,
+          "filled": 0,
+          "side": "sell",
+          "userId": "5",
+          "orderId": "rorhom8e0kcp6zve0b2ngd"
+        },
+        {
+          "price": 1003,
+          "quantity": 300,
+          "filled": 0,
+          "side": "sell",
+          "userId": "1",
+          "orderId": "ur3cm7laqi87n0i84lpyg"
+        },
+        {
+          "price": 1003,
+          "quantity": 100,
+          "filled": 0,
+          "side": "sell",
+          "userId": "1",
+          "orderId": "rkyblf46p5p4v7jg37vf"
+        },
+        {
+          "price": 1002.9,
+          "quantity": 500,
+          "filled": 0,
+          "side": "sell",
+          "userId": "1",
+          "orderId": "30ix42e7k5gcz1bh6ipt4q"
+        }
+      ],
+      "lastTradeId": 0,
+      "currentPrice": 0
+    }
+  ],
+  "balances": {
+    "1": {
+      "INR": { "available": 298910, "locked": 701090 },
+      "USDC": { "available": 998800, "locked": 1200 }
+    },
+    "2": {
+      "INR": { "available": 699490, "locked": 300510 },
+      "USDC": { "available": 999000, "locked": 1000 }
+    },
+    "5": {
+      "INR": { "available": 98530, "locked": 901470 },
+      "USDC": { "available": 998300, "locked": 1700 }
+    }
+  }
+}

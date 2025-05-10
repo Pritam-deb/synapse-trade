@@ -1,6 +1,6 @@
 import { RedisManager } from "../RedisManager";
 import { Router } from "express";
-import { GET_OPEN_ORDERS, CREATE_ORDER } from "../types";
+import { GET_OPEN_ORDERS, CREATE_ORDER, CANCEL_ORDER } from "../types";
 
 export const orderRouter = Router();
 
@@ -25,6 +25,18 @@ orderRouter.post("/create", async (req, res) => {
             price,
             quantity,
             userId,
+        }
+    });
+    res.json(response.payload);
+});
+
+orderRouter.delete("/", async (req, res) => {
+    const { orderId, market } = req.body;
+    const response = await RedisManager.getInstance().sendAndAwait({
+        type: CANCEL_ORDER,
+        data: {
+            orderId,
+            market
         }
     });
     res.json(response.payload);
