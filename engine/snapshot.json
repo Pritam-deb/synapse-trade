@@ -1,168 +1,34 @@
 {
-    "orderbooks": [
+  "orderbooks": [
+    {
+      "baseAsset": "USDC",
+      "bids": [],
+      "asks": [
         {
-            "baseAsset": "USDC",
-            "bids": [
-                {
-                    "price": 0.9999,
-                    "quantity": 1000,
-                    "orderId": "buyorder3",
-                    "filled": 0,
-                    "side": "buy",
-                    "userId": "5"
-                },
-                {
-                    "price": 0.9998,
-                    "quantity": 500,
-                    "orderId": "buyorder1",
-                    "filled": 0,
-                    "side": "buy",
-                    "userId": "1"
-                },
-                {
-                    "price": 0.9997,
-                    "quantity": 250,
-                    "orderId": "buyorder4",
-                    "filled": 0,
-                    "side": "buy",
-                    "userId": "1"
-                },
-                {
-                    "price": 0.9996,
-                    "quantity": 300,
-                    "orderId": "buyorder2",
-                    "filled": 0,
-                    "side": "buy",
-                    "userId": "2"
-                },
-                {
-                    "price": 0.9995,
-                    "quantity": 700,
-                    "orderId": "buyorder5",
-                    "filled": 0,
-                    "side": "buy",
-                    "userId": "3"
-                },
-                {
-                    "price": 0.9994,
-                    "quantity": 600,
-                    "orderId": "buyorder6",
-                    "filled": 0,
-                    "side": "buy",
-                    "userId": "4"
-                }
-            ],
-            "asks": [
-                {
-                    "price": 1.0001,
-                    "quantity": 500,
-                    "orderId": "sellorder1",
-                    "filled": 0,
-                    "side": "sell",
-                    "userId": "2"
-                },
-                {
-                    "price": 1.0002,
-                    "quantity": 800,
-                    "orderId": "sellorder2",
-                    "filled": 0,
-                    "side": "sell",
-                    "userId": "5"
-                },
-                {
-                    "price": 1.0003,
-                    "quantity": 150,
-                    "orderId": "sellorder3",
-                    "filled": 0,
-                    "side": "sell",
-                    "userId": "1"
-                },
-                {
-                    "price": 1.0004,
-                    "quantity": 1000,
-                    "orderId": "sellorder4",
-                    "filled": 0,
-                    "side": "sell",
-                    "userId": "4"
-                },
-                {
-                    "price": 1.0005,
-                    "quantity": 450,
-                    "orderId": "sellorder5",
-                    "filled": 0,
-                    "side": "sell",
-                    "userId": "3"
-                }
-            ],
-            "lastTradeId": 230,
-            "currentPrice": 1
+          "price": 1,
+          "quantity": 200,
+          "filled": 200,
+          "side": "sell",
+          "userId": "5",
+          "orderId": "255mqvhs99jr9a0e17bxk"
         }
-    ],
-    "balances": {
-        "1": [
-            "1",
-            {
-                "INR": {
-                    "available": 5000000,
-                    "locked": 100000
-                },
-                "USDC": {
-                    "available": 2000,
-                    "locked": 500
-                }
-            }
-        ],
-        "2": [
-            "2",
-            {
-                "INR": {
-                    "available": 2000000,
-                    "locked": 250000
-                },
-                "USDC": {
-                    "available": 1500,
-                    "locked": 800
-                }
-            }
-        ],
-        "3": [
-            "3",
-            {
-                "INR": {
-                    "available": 1500000,
-                    "locked": 100000
-                },
-                "USDC": {
-                    "available": 2200,
-                    "locked": 700
-                }
-            }
-        ],
-        "4": [
-            "4",
-            {
-                "INR": {
-                    "available": 1000000,
-                    "locked": 75000
-                },
-                "USDC": {
-                    "available": 1800,
-                    "locked": 1000
-                }
-            }
-        ],
-        "5": [
-            "5",
-            {
-                "INR": {
-                    "available": 100000,
-                    "locked": 20000
-                },
-                "USDC": {
-                    "available": 10000,
-                    "locked": 2000
-                }
-            }
-        ]
+      ],
+      "lastTradeId": 18,
+      "currentPrice": 0
     }
+  ],
+  "balances": {
+    "1": {
+      "INR": { "available": 9997599.22, "locked": 0.019999999999697593 },
+      "USDC": { "available": 10002400, "locked": 0 }
+    },
+    "2": {
+      "INR": { "available": 10001000.5, "locked": 0 },
+      "USDC": { "available": 9999000, "locked": 0 }
+    },
+    "5": {
+      "INR": { "available": 10001400.259999998, "locked": 0 },
+      "USDC": { "available": 9998400, "locked": 200 }
+    }
+  }
 }
