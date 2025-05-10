@@ -1,7 +1,7 @@
 import fs from 'fs';
-import { GET_DEPTH, GET_OPEN_ORDERS, MessageFromApi } from "../types/fromApi";
+import { CREATE_ORDER, GET_DEPTH, GET_OPEN_ORDERS, MessageFromApi } from "../types/fromApi";
 import { RedisManager } from "../RedisManager";
-import { Orderbook } from './orderbook';
+import { Fill, Order, Orderbook } from './orderbook';
 
 
 export const BASE_CURRENCY = 'INR';
@@ -51,9 +51,9 @@ export class Engine {
         switch (message.type) {
             case GET_OPEN_ORDERS: {
                 try {
-                    const {market} = message.data;
-                    const openorderbook = this.orderbooks.find(o=>o.ticker()===market);
-                    if(!openorderbook) throw new Error("No orderbooks found");
+                    const { market } = message.data;
+                    const openorderbook = this.orderbooks.find(o => o.ticker() === market);
+                    if (!openorderbook) throw new Error("No orderbooks found");
                     const openOrders = openorderbook.getOpenOrders(message.data.userId)
                     RedisManager.getInstance().sendToApi(clientId, {
                         type: "OPEN_ORDERS",
@@ -63,6 +63,7 @@ export class Engine {
                     console.error("Error processing message:", error);
                 }
             }
+            break;
             case GET_DEPTH: {
                 try {
                     const { market } = message.data;
@@ -84,6 +85,124 @@ export class Engine {
                     });
                 }
             }
+            break;
+            case CREATE_ORDER: {
+                try {
+                    if ('quantity' in message.data && 'side' in message.data && 'price' in message.data && 'userId' in message.data) {
+                        const {market, side, price, quantity, userId} = message.data;
+                        // Proceed with the logic here
+                        const {executedQty, fills, orderId} = this.createOrder(market, side, price, quantity, userId);
+                        RedisManager.getInstance().sendToApi(clientId, {
+                            type: "ORDER_PLACED",
+                            payload: {
+                                orderId,
+                                executedQty,
+                                fills
+                            }
+                        });
+                    } else {
+                        throw new Error("Invalid message data for CREATE_ORDER");
+                    }
+                } catch (error) {
+                    console.error("Error processing message:", error);
+                    RedisManager.getInstance().sendToApi(clientId, {
+                        type: "ORDER_CANCELLED",
+                        payload: {
+                            orderId: "",
+                            executedQty: 0,
+                            remainingQty: 0,
+                        }
+                    });
+                }
+            }
+            break;
+        }
+    }
+
+    createOrder( market: string, side: 'buy' | 'sell', price: string, quantity: string, userId: string ) {
+        const orderbook = this.orderbooks.find(orderbook => orderbook.ticker() === market);
+        if (!orderbook) {
+            throw new Error("Orderbook not found");
+        }
+        const baseAsset = market.split("_")[0];
+        const quoteAsset = market.split("_")[1];
+
+        this.checkAndLockFunds(
+            userId,
+            baseAsset,
+            quoteAsset,
+            side,
+            Number(price),
+            Number(quantity)
+        )
+        const order : Order = {
+            price: Number(price),
+            quantity: Number(quantity),
+            filled: 0,
+            side,
+            userId,
+            orderId: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
+        };
+        const {fills, executedQty} = orderbook.addOrder(order);
+        this.updateBalances(userId, baseAsset, quoteAsset, side, fills, executedQty);
+        return {
+            orderId: order.orderId,
+            executedQty,
+            fills
+        }
+    }
+
+    checkAndLockFunds(userId: string, baseAsset: string, quoteAsset: string, side: 'buy' | 'sell', price: number, quantity: number) {
+        const userBalance = this.balances.get(userId);
+        if (!userBalance) {
+            throw new Error("User not found");
+        }
+
+        const baseAssetBalance = userBalance?.[baseAsset] || {locked: 0, available: 0};
+        const quoteAssetBalance = userBalance?.[quoteAsset] || {locked: 0, available: 0};
+
+        if (side === 'buy') {
+            if (quoteAssetBalance.available < price * quantity) {
+                throw new Error("Insufficient funds");
+            }
+            quoteAssetBalance.available -= price * quantity;
+            quoteAssetBalance.locked += price * quantity;
+        } else {
+            if (baseAssetBalance.available < quantity) {
+                throw new Error("Insufficient funds");
+            }
+            baseAssetBalance.available -= quantity;
+            baseAssetBalance.locked += quantity;
+        }
+    }
+
+    updateBalances(userId: string, baseAsset: string, quoteAsset: string, side: 'buy' | 'sell', fills: Fill[], executedQty: number) {
+        if(side === 'buy') {
+            fills.forEach(fill => {
+                //update quote asset balance
+                // @ts-ignore
+                this.balances.get(fill.otherUserId)[quoteAsset].available += fill.price * fill.qty;
+                // @ts-ignore
+                this.balances.get(userId)[quoteAsset].locked -= fill.price * fill.qty;
+                //update base asset balance
+                // @ts-ignore
+                this.balances.get(fill.otherUserId)[baseAsset].locked -= fill.qty;
+                // @ts-ignore
+                this.balances.get(userId)[baseAsset].available += fill.qty;
+            })
+        } else {
+            fills.forEach(fill => {
+                //update base asset balance
+                // @ts-ignore
+                this.balances.get(fill.otherUserId)[baseAsset].available += fill.qty;
+                // @ts-ignore
+                this.balances.get(userId)[baseAsset].locked -= fill.qty;
+                //update quote asset balance
+                // @ts-ignore
+                this.balances.get(fill.otherUserId)[quoteAsset].locked -= fill.price * fill.qty;
+                // @ts-ignore
+                this.balances.get(userId)[quoteAsset].available += fill.price * fill.qty;
+            })
         }
     }
 

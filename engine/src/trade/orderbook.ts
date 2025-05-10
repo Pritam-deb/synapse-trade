@@ -10,6 +10,15 @@ export interface Order {
     userId: string;
 }
 
+export interface Fill {
+    price: string;
+    qty: number;
+    tradeId: number;
+    otherUserId: string;
+    markerOrderId: string;
+}
+
+
 export class Orderbook {
     bids: Order[] = [];
     asks: Order[] = [];
@@ -84,5 +93,91 @@ export class Orderbook {
         const asks = this.asks.filter(x => x.userId === userId);
         const bids = this.bids.filter(x => x.userId === userId);
         return [...asks, ...bids];
+    }
+
+    addOrder(order: Order): {executedQty: number, fills: Fill[]} {
+        
+        if (order.side === "buy") {
+            const {executedQty, fills} = this.matchBid(order);
+            order.filled = executedQty;
+            if(order.quantity === executedQty) {
+                return {executedQty, fills};
+            }
+            this.bids.push(order);
+            return {executedQty, fills};
+        } else {
+            const {executedQty, fills} = this.matchAsk(order);
+            order.filled = executedQty;
+            if(order.quantity === executedQty) {
+                return {executedQty, fills};
+            }
+            this.asks.push(order);
+            return {executedQty, fills};
+        }
+    }
+
+    matchBid(order: Order): {executedQty: number, fills: Fill[]} {
+        const fills: Fill[] = [];
+        let executedQty = 0;
+
+        for (let i = 0; i < this.asks.length; i++) {
+            const ask = this.asks[i];
+            if (ask.price <= order.price && executedQty < order.quantity) {
+                const fillQty = Math.min(order.quantity - executedQty, ask.quantity);
+                executedQty += fillQty;
+                this.asks[i].quantity += fillQty;
+                fills.push({
+                    price: ask.price.toString(),
+                    qty: fillQty,
+                    tradeId: this.lastTradeId++,
+                    otherUserId: ask.userId,
+                    markerOrderId: ask.orderId
+                });
+            }
+        }
+        for (let i = 0; i < this.asks.length; i++) {
+            if (this.asks[i].quantity == this.asks[i].filled) {
+                this.asks.splice(i, 1);
+                i--;
+            }
+        }
+        console.log("Executed qty: ", executedQty);
+        console.log("Fills: ", fills);
+        return {
+            executedQty,
+            fills
+        }
+    }
+
+    matchAsk(order: Order): {executedQty: number, fills: Fill[]}{
+        const fills: Fill[] = [];
+        let executedQty = 0;
+        for (let i = 0; i < this.bids.length; i++) {
+            const bid = this.bids[i];
+            if (bid.price >= order.price && executedQty < order.quantity) {
+                const fillQty = Math.min(order.quantity - executedQty, bid.quantity);
+                executedQty += fillQty;
+                this.bids[i].quantity += fillQty;
+                fills.push({
+                    price: bid.price.toString(),
+                    qty: fillQty,
+                    tradeId: this.lastTradeId++,
+                    otherUserId: bid.userId,
+                    markerOrderId: bid.orderId
+                });
+            }
+        }
+        for (let i = 0; i < this.bids.length; i++) {
+            if (this.bids[i].quantity == this.bids[i].filled) {
+                this.bids.splice(i, 1);
+                i--;
+            }
+        }
+        console.log("Executed qty: ", executedQty);
+        console.log("Fills: ", fills);
+        return {
+            executedQty,
+            fills
+        }
     }
 }
