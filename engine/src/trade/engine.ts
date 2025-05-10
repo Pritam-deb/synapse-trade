@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { CREATE_ORDER, GET_DEPTH, GET_OPEN_ORDERS, MessageFromApi, USER_BALANCE } from "../types/fromApi";
+import { CANCEL_ORDER, CREATE_ORDER, GET_DEPTH, GET_OPEN_ORDERS, MessageFromApi, USER_BALANCE } from "../types/fromApi";
 import { RedisManager } from "../RedisManager";
 import { Fill, Order, Orderbook } from './orderbook';
 
@@ -89,7 +89,7 @@ export class Engine {
                 break;
             case CREATE_ORDER: {
                 try {
-                    if ('quantity' in message.data && 'side' in message.data && 'price' in message.data && 'userId' in message.data) {
+                    if (message.data) {
                         const { market, side, price, quantity, userId } = message.data;
                         // Proceed with the logic here
                         const { executedQty, fills, orderId } = this.createOrder(market, side, price, quantity, userId);
@@ -138,6 +138,59 @@ export class Engine {
                     console.error("Error processing message:", error);
                 }
             }
+            case CANCEL_ORDER:
+                try {
+                    let orderId = "";
+                    let cancelMarket = "";
+                    if ("orderId" in message.data && "market" in message.data) {
+                        orderId = message.data.orderId;
+                        cancelMarket = message.data.market;
+                    }
+                    const cancelOrderbook = this.orderbooks.find(o => o.ticker() === cancelMarket);
+                    const quoteAsset = cancelMarket.split("_")[1];
+                    if (!cancelOrderbook) {
+                        throw new Error("No orderbook found");
+                    }
+
+                    const order = cancelOrderbook.asks.find(o => o.orderId === orderId) || cancelOrderbook.bids.find(o => o.orderId === orderId);
+                    if (!order) {
+                        console.log("No order found");
+                        throw new Error("No order found");
+                    }
+
+                    if (order.side === "buy") {
+                        const price = cancelOrderbook.cancelBid(order)
+                        const leftQuantity = (order.quantity - order.filled) * order.price;
+                        //@ts-ignore
+                        this.balances.get(order.userId)[BASE_CURRENCY].available += leftQuantity;
+                        //@ts-ignore
+                        this.balances.get(order.userId)[BASE_CURRENCY].locked -= leftQuantity;
+                        if (price) {
+                            this.sendUpdatedDepthAt(price.toString(), cancelMarket);
+                        }
+                    } else {
+                        const price = cancelOrderbook.cancelAsk(order)
+                        const leftQuantity = order.quantity - order.filled;
+                        //@ts-ignore
+                        this.balances.get(order.userId)[quoteAsset].available += leftQuantity;
+                        //@ts-ignore
+                        this.balances.get(order.userId)[quoteAsset].locked -= leftQuantity;
+                        if (price) {
+                            this.sendUpdatedDepthAt(price.toString(), cancelMarket);
+                        }
+                    }
+
+                    RedisManager.getInstance().sendToApi(clientId, {
+                        type: "ORDER_CANCELLED",
+                        payload: {
+                            orderId,
+                            executedQty: 0,
+                            remainingQty: 0
+                        }
+                    });
+                } catch (error) {
+                    console.error("Error processing message:", error);
+                }
         }
     }
 
@@ -232,6 +285,25 @@ export class Engine {
                 // console.log("selling user balance", this.balances.get(userId));
             })
         }
+    }
+
+    sendUpdatedDepthAt(price: string, market: string) {
+        const orderbook = this.orderbooks.find(o => o.ticker() === market);
+        if (!orderbook) {
+            return;
+        }
+        const depth = orderbook.getDepth();
+        const updatedBids = depth?.bids.filter(x => x[0] === price);
+        const updatedAsks = depth?.asks.filter(x => x[0] === price);
+
+        RedisManager.getInstance().publishMessage(`depth@${market}`, {
+            stream: `depth@${market}`,
+            data: {
+                a: updatedAsks.length ? updatedAsks : [[price, "0"]],
+                b: updatedBids.length ? updatedBids : [[price, "0"]],
+                e: "depth"
+            }
+        });
     }
 
     setBaseBalances() {
