@@ -8,6 +8,7 @@ const USER_ID = ["1", "2", "5"];
 
 async function main() {
     const price = 1000 + Math.random() * 10;
+    //only orders of 1 user is fetched here
     const openOrders = await axios.get(`${BASE_URL}/order/open?userId=${USER_ID}&market=${MARKET}`);
 
     const totalBids = openOrders.data.filter((o: any) => o.side === "buy").length;
@@ -20,7 +21,7 @@ async function main() {
     // - cancelledBids;
     let asksToAdd = TOTAL_ASK - totalAsks
     // - cancelledAsks;
-    console.log((price - Math.random() * 1).toFixed(1).toString())
+    console.log("Bids to add: ", bidsToAdd, "Asks to add: ", asksToAdd);
     while (bidsToAdd > 0 || asksToAdd > 0) {
         if (bidsToAdd > 0) {
             const res = await axios.post(`${BASE_URL}/order/create`, {
@@ -30,21 +31,32 @@ async function main() {
                 side: "buy",
                 userId: getRandomUserId()
             });
-            bidsToAdd--;
+            console.log("Bids added: ", res.data);
+            if (res.data.orderId !== '') {
+                bidsToAdd--;
+            }
         }
         if (asksToAdd > 0) {
-            await axios.post(`${BASE_URL}/order/create`, {
+            const res = await axios.post(`${BASE_URL}/order/create`, {
                 market: MARKET,
                 price: (price + Math.random() * 1).toFixed(1).toString(),
                 quantity: getRandomQuantity().toString(),
                 side: "sell",
                 userId: getRandomUserId()
             });
-            asksToAdd--;
+            console.log("Asks added: ", res.data);
+            if (res.data.orderId !== '') {
+                asksToAdd--;
+            }
         }
+        console.log("Bids to add: ", bidsToAdd, "Asks to add: ", asksToAdd);
+        await new Promise(resolve => setTimeout(resolve, 1000));
     }
 
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => {
+        console.log("Waiting for 30 minutes before next iteration");
+        setTimeout(resolve, 1000 * 60 * 30);
+    });
 
     main();
 }

@@ -1,6 +1,7 @@
 import fs from 'fs';
 import { CANCEL_ORDER, CREATE_ORDER, GET_DEPTH, GET_OPEN_ORDERS, MessageFromApi, USER_BALANCE } from "../types/fromApi";
-import { RedisManager } from "../RedisManager";
+import { ORDER_UPDATE, TRADE_ADDED } from "../types/index";
+import { DbMessage, RedisManager } from "../RedisManager";
 import { Fill, Order, Orderbook } from './orderbook';
 
 
@@ -220,6 +221,8 @@ export class Engine {
         };
         const { fills, executedQty } = orderbook.addOrder(order);
         this.updateBalances(userId, baseAsset, quoteAsset, side, fills, executedQty);
+        this.createDbTrades(fills, market, userId);
+        this.updateDbOrder(order, executedQty, fills, market);
         return {
             orderId: order.orderId,
             executedQty,
@@ -304,6 +307,52 @@ export class Engine {
                 e: "depth"
             }
         });
+    }
+
+    createDbTrades(fills: Fill[], market: string, userId: string) {
+        fills.forEach(fill => {
+            const message: DbMessage = {
+                type: TRADE_ADDED,
+                data: {
+                    market: market,
+                    id: fill.tradeId.toString(),
+                    isBuyerMaker: fill.otherUserId === userId,
+                    price: fill.price,
+                    quantity: fill.qty.toString(),
+                    quoteQuantity: (fill.qty * Number(fill.price)).toString(),
+                    timestamp: Date.now()
+                }
+            };
+            RedisManager.getInstance().pushMessageToQueue(message);
+        })
+    }
+
+    updateDbOrder(order: Order, executedQty: number, fills: Fill[], market: string) {
+        const message: DbMessage = {
+            type: ORDER_UPDATE,
+            data: {
+                orderId: order.orderId,
+                executedQty,
+                market,
+                price: order.price.toString(),
+                quantity: order.quantity.toString(),
+                side: order.side
+            }
+        };
+        RedisManager.getInstance().pushMessageToQueue(message);
+        fills.forEach(fill => {
+            RedisManager.getInstance().pushMessageToQueue({
+                type: ORDER_UPDATE,
+                data: {
+                    orderId: fill.markerOrderId,
+                    executedQty: fill.qty,
+                    market,
+                    price: fill.price.toString(),
+                    quantity: fill.qty.toString(),
+                    side: order.side === "buy" ? "sell" : "buy",
+                }
+            })
+        })
     }
 
     setBaseBalances() {
