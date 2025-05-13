@@ -95,6 +95,8 @@ export class Orderbook {
         return [...asks, ...bids];
     }
 
+
+
     addOrder(order: Order): { executedQty: number, fills: Fill[] } {
         let result;
         if (order.side === "buy") {
@@ -128,6 +130,7 @@ export class Orderbook {
 
         for (let i = 0; i < this.asks.length && executedQty < order.quantity; i++) {
             const ask = this.asks[i];
+            if (ask.userId === order.userId) continue; // Prevent self-trading
             if (ask.price <= order.price) {
                 const fillQty = Math.min(order.quantity - executedQty, ask.quantity);
                 ask.quantity -= fillQty;
@@ -160,6 +163,7 @@ export class Orderbook {
 
         for (let i = 0; i < this.bids.length && executedQty < order.quantity; i++) {
             const bid = this.bids[i];
+            if (bid.userId === order.userId) continue; // Prevent self-trading
             if (bid.price >= order.price) {
                 const fillQty = Math.min(order.quantity - executedQty, bid.quantity);
                 bid.quantity -= fillQty;
