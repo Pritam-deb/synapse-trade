@@ -139,7 +139,7 @@ export class Engine {
                     console.error("Error processing message:", error);
                 }
             }
-            case CANCEL_ORDER:
+            case CANCEL_ORDER:{
                 try {
                     let orderId = "";
                     let cancelMarket = "";
@@ -192,6 +192,7 @@ export class Engine {
                 } catch (error) {
                     console.error("Error processing message:", error);
                 }
+            }
         }
     }
 
@@ -261,9 +262,9 @@ export class Engine {
             fills.forEach(fill => {
                 //update quote asset balance
                 // @ts-ignore
-                this.balances.get(fill.otherUserId)[quoteAsset].available += fill.price * fill.qty;
+                this.balances.get(fill.otherUserId)[quoteAsset].available += parseFloat(fill.price) * fill.qty;
                 // @ts-ignore
-                this.balances.get(userId)[quoteAsset].locked -= fill.price * fill.qty;
+                this.balances.get(userId)[quoteAsset].locked -= parseFloat(fill.price) * fill.qty;
                 //update base asset balance
                 // @ts-ignore
                 this.balances.get(fill.otherUserId)[baseAsset].locked -= fill.qty;
@@ -281,9 +282,9 @@ export class Engine {
                 this.balances.get(userId)[baseAsset].locked -= fill.qty;
                 //update quote asset balance
                 // @ts-ignore
-                this.balances.get(fill.otherUserId)[quoteAsset].locked -= fill.price * fill.qty;
+                this.balances.get(fill.otherUserId)[quoteAsset].locked -= parseFloat(fill.price) * fill.qty;
                 // @ts-ignore
-                this.balances.get(userId)[quoteAsset].available += fill.price * fill.qty;
+                this.balances.get(userId)[quoteAsset].available += parseFloat(fill.price) * fill.qty;
                 // console.log("selling other user balance", this.balances.get(fill.otherUserId));
                 // console.log("selling user balance", this.balances.get(userId));
             })

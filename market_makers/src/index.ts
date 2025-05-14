@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const BASE_URL = "http://localhost:3000";
-const TOTAL_BIDS = 10;
-const TOTAL_ASK = 10;
+const TOTAL_BIDS = 6;
+const TOTAL_ASK = 6;
 const MARKET = "USDC_INR";
 const USER_ID = ["1", "2", "5"];
 
@@ -14,24 +14,20 @@ async function main() {
     const totalBids = openOrders.data.filter((o: any) => o.side === "buy").length;
     const totalAsks = openOrders.data.filter((o: any) => o.side === "sell").length;
 
-    // const cancelledBids = await cancelBidsMoreThan(openOrders.data, price);
-    // const cancelledAsks = await cancelAsksLessThan(openOrders.data, price);
+    const cancelledBids = await cancelBidsMoreThan(openOrders.data, price);
+    const cancelledAsks = await cancelAsksLessThan(openOrders.data, price);
 
-    let bidsToAdd = TOTAL_BIDS - totalBids
-    // - cancelledBids;
-    let asksToAdd = TOTAL_ASK - totalAsks
-    // - cancelledAsks;
-    console.log("Bids to add: ", bidsToAdd, "Asks to add: ", asksToAdd);
+    let bidsToAdd = TOTAL_BIDS - totalBids - cancelledBids;
+    let asksToAdd = TOTAL_ASK - totalAsks- cancelledAsks;
     while (bidsToAdd > 0 || asksToAdd > 0) {
         if (bidsToAdd > 0) {
             const res = await axios.post(`${BASE_URL}/order/create`, {
                 market: MARKET,
-                price: (price - Math.random() * 1).toFixed(1).toString(),
+                price: (price + Math.random() * 2).toFixed(1).toString(), // Allow matching
                 quantity: getRandomQuantity().toString(),
                 side: "buy",
                 userId: getRandomUserId()
             });
-            console.log("Bids added: ", res.data);
             if (res.data.orderId !== '') {
                 bidsToAdd--;
             }
@@ -39,17 +35,15 @@ async function main() {
         if (asksToAdd > 0) {
             const res = await axios.post(`${BASE_URL}/order/create`, {
                 market: MARKET,
-                price: (price + Math.random() * 1).toFixed(1).toString(),
+                price: (price - Math.random() * 2).toFixed(1).toString(), // Allow matching
                 quantity: getRandomQuantity().toString(),
                 side: "sell",
                 userId: getRandomUserId()
             });
-            console.log("Asks added: ", res.data);
             if (res.data.orderId !== '') {
                 asksToAdd--;
             }
         }
-        console.log("Bids to add: ", bidsToAdd, "Asks to add: ", asksToAdd);
         await new Promise(resolve => setTimeout(resolve, 1000));
     }
 
