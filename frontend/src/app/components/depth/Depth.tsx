@@ -11,6 +11,7 @@ export const Depth = ({ market }: { market: string }) => {
   const [price, setPrice] = useState<string>();
   useEffect(() => {
     getDepth(market).then((data) => {
+      console.log("depth", data);
       setAsks(
         data.asks.filter((ask: string[]) => ask.length === 2) as [
           string,

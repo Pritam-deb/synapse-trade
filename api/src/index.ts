@@ -18,6 +18,7 @@ app.use("/user", userRouter)
 app.use("/kline", klineRouter)
 app.use("/trades", tradesRouter);
 app.use("/tickers", tickersRouter);
+app.use("/ticker", tickersRouter);
 
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);

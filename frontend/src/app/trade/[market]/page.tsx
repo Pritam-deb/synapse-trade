@@ -7,6 +7,7 @@ import { SwapUI } from "@/app/components/SwapUI";
 
 export default function Page() {
   const { market } = useParams();
+  console.log("market in market page is====>", market);
   return (
     <div className="flex flex-row flex-1">
       <div className="flex flex-col flex-4">
@@ -17,6 +18,7 @@ export default function Page() {
           </div>
           <div className="w-[1px] flex-col border-slate-800 border-l"></div>
           <div className="flex flex-col w-[250px] overflow-hidden flex-1">
+
             <Depth market={market as string} />
           </div>
         </div>

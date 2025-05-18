@@ -16,10 +16,10 @@ const nextConfig: NextConfig = {
       //   source: '/api/backpack/:path*',
       //   destination: 'https://api.backpack.exchange/api/v1/:path*',
       // },
-      {
-        source: '/:path*',
-        destination: 'http://localhost:3000/:path*', // Proxy to Backend
-      }
+      // {
+      //   source: '/:path*',
+      //   destination: 'http://localhost:3000/:path*', // Proxy to Backend
+      // }
     ];
   },
 };
