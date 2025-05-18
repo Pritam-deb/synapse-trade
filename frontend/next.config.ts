@@ -12,10 +12,14 @@ const nextConfig: NextConfig = {
       //   source: '/api/backpack/ticker/:path*', // Match /api/backpack/ticker followed by anything
       //   destination: 'https://api.backpack.exchange/api/v1/ticker/:path*',
       // },
+      // {
+      //   source: '/api/backpack/:path*',
+      //   destination: 'https://api.backpack.exchange/api/v1/:path*',
+      // },
       {
-        source: '/api/backpack/:path*',
-        destination: 'https://api.backpack.exchange/api/v1/:path*',
-      },
+        source: '/:path*',
+        destination: 'http://localhost:3000/:path*', // Proxy to Backend
+      }
     ];
   },
 };
