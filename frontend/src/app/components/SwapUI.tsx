@@ -1,10 +1,34 @@
 "use client";
 import { useState } from "react";
+import { postOrder } from "../utils/httpClients"; // Adjust path if needed
 
 export function SwapUI({ market }: { market: string }) {
-  const [amount, setAmount] = useState("");
+  const [price, setPrice] = useState("");
+  const [quantity, setQuantity] = useState("");
   const [activeTab, setActiveTab] = useState("buy");
   const [type, setType] = useState("limit");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async () => {
+    if (!price || !quantity) return;
+
+    try {
+      setLoading(true);
+      const userId = "1"; // replace with real user ID
+      const response = await postOrder(
+        market,
+        activeTab,
+        price,
+        quantity,
+        userId
+      );
+      console.log("Order placed:", response);
+    } catch (error) {
+      console.error("Order failed:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div>
@@ -44,8 +68,8 @@ export function SwapUI({ market }: { market: string }) {
                       placeholder="0"
                       className="h-12 rounded-lg border-2 border-solid border-baseBorderLight bg-[var(--background)] pr-12 text-left text-2xl leading-9 text-[$text] placeholder-baseTextMedEmphasis ring-0 transition focus:border-accentBlue focus:ring-0"
                       type="text"
-                      value={amount}
-                      onChange={(e) => setAmount(e.target.value)}
+                      value={price}
+                      onChange={(e) => setPrice(e.target.value)}
                     />
                     <div className="absolute right-1 top-1 p-2">
                       {/* Icon placeholder */}
@@ -64,7 +88,8 @@ export function SwapUI({ market }: { market: string }) {
                       placeholder="0"
                       className="h-12 rounded-lg border-2 border-solid border-baseBorderLight bg-[var(--background)] pr-12 text-left text-2xl leading-9 text-[$text] placeholder-baseTextMedEmphasis ring-0 transition focus:border-accentBlue focus:ring-0"
                       type="text"
-                      defaultValue="0"
+                      value={quantity}
+                      onChange={(e) => setQuantity(e.target.value)}
                     />
                     <div className="absolute right-1 top-1 p-2">
                       {/* Icon placeholder */}
@@ -159,6 +184,8 @@ export function SwapUI({ market }: { market: string }) {
           </div>
           <button
             type="button"
+            onClick={handleSubmit}
+            disabled={loading}
             className={`font-semibold focus:ring-blue-200 focus:none focus:outline-none text-center h-12 rounded-xl text-base px-4 py-2 my-4 active:scale-98 ${
               activeTab === "buy"
                 ? "bg-green-500 text-green-950"
@@ -166,7 +193,7 @@ export function SwapUI({ market }: { market: string }) {
             }`}
             data-rac=""
           >
-            {activeTab === "buy" ? "Buy" : "Sell"}
+            {loading ? "Placing..." : activeTab === "buy" ? "Buy" : "Sell"}
           </button>
           <div className="flex justify-between flex-row mt-1">
             <div className="flex flex-row gap-2">

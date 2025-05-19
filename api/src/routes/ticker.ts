@@ -4,7 +4,6 @@ import { Router } from "express";
 export const tickersRouter = Router();
 
 tickersRouter.get("/", async (req, res) => {
-    console.log("tickersRouter");
     res.json([
         {
             "firstPrice": "82.50",
@@ -23,7 +22,6 @@ tickersRouter.get("/", async (req, res) => {
 
 tickersRouter.get("/fetch", async (req, res) => {
     const { symbol } = req.query;
-    console.log("tickersRouter====>", symbol);
     res.json({
         "firstPrice": "82.50",
         "high": "84.00",
