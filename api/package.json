@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^6.8.2",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
     "@types/pg": "^8.15.0",
@@ -20,6 +21,7 @@
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "pg": "^8.15.6",
+    "prisma": "^6.8.2",
     "redis": "^5.0.1"
   },
   "devDependencies": {

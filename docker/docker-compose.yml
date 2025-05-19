@@ -26,11 +26,11 @@ services:
     container_name: synapse_CoreDB
     restart: always
     ports:
-      - "5433:5433"
+      - "5433:5432"
     environment:
       POSTGRES_DB: core_db
       POSTGRES_USER: coreadmin
-      POSTGRES_PASSWORD: adminpassword
+      POSTGRES_PASSWORD: coreadminpassword
     volumes:
       - coredb-data:/var/lib/postgresql/data
 
