@@ -21,5 +21,19 @@ services:
     ports:
       - "6379:6379"
 
+  coredb:
+    image: postgres:15
+    container_name: synapse_CoreDB
+    restart: always
+    ports:
+      - "5433:5433"
+    environment:
+      POSTGRES_DB: core_db
+      POSTGRES_USER: coreadmin
+      POSTGRES_PASSWORD: adminpassword
+    volumes:
+      - coredb-data:/var/lib/postgresql/data
+
 volumes:
   timescale-data:
+  coredb-data:
