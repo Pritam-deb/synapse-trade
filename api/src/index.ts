@@ -7,6 +7,8 @@ import { klineRouter } from "./routes/kline";
 import { tradesRouter } from "./routes/trades";
 import { tickersRouter } from "./routes/ticker";
 
+/// <reference path="./types/express/express.d.ts" />
+
 const app = express();
 const port = process.env.PORT || 3000;
 app.use(cors());

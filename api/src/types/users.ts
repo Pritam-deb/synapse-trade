@@ -11,4 +11,4 @@ const signinSchema = zod.object({
     password: zod.string().min(8),
 })
 
-export {createUserSchema, signinSchema}
+export { createUserSchema, signinSchema }
