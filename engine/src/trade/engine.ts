@@ -1,8 +1,9 @@
 import fs from 'fs';
-import { CANCEL_ORDER, CREATE_ORDER, GET_DEPTH, GET_OPEN_ORDERS, MessageFromApi, USER_BALANCE } from "../types/fromApi";
+import { CANCEL_ORDER, CREATE_ORDER, GET_DEPTH, GET_OPEN_ORDERS, GET_TICKER, MessageFromApi, USER_BALANCE } from "../types/fromApi";
 import { ORDER_UPDATE, TRADE_ADDED } from "../types/index";
 import { DbMessage, RedisManager } from "../RedisManager";
 import { Fill, Order, Orderbook } from './orderbook';
+import { env } from 'process';
 
 
 export const BASE_CURRENCY = 'INR';
@@ -22,7 +23,7 @@ export class Engine {
     constructor() {
         let snapshot = null;
         try {
-            if (true) {
+            if (env.WITH_SNAPSHOT) {
                 snapshot = fs.readFileSync("./snapshot.json", "utf-8");
             }
         } catch (error) {
@@ -54,7 +55,7 @@ export class Engine {
             case GET_OPEN_ORDERS: {
                 try {
                     const { market } = message.data;
-                    const openorderbook = this.orderbooks.find(o => o.ticker() === market);
+                    const openorderbook = this.orderbooks.find(o => o.market() === market);
                     if (!openorderbook) throw new Error("No orderbooks found");
                     const openOrders = openorderbook.getOpenOrders(message.data.userId)
                     RedisManager.getInstance().sendToApi(clientId, {
@@ -69,7 +70,7 @@ export class Engine {
             case GET_DEPTH: {
                 try {
                     const { market } = message.data;
-                    const orderbook = this.orderbooks.find(orderbook => orderbook.ticker() === market);
+                    const orderbook = this.orderbooks.find(orderbook => orderbook.market() === market);
                     if (orderbook) {
                         RedisManager.getInstance().sendToApi(clientId, {
                             type: "DEPTH",
@@ -139,7 +140,7 @@ export class Engine {
                     console.error("Error processing message:", error);
                 }
             }
-            case CANCEL_ORDER:{
+            case CANCEL_ORDER: {
                 try {
                     let orderId = "";
                     let cancelMarket = "";
@@ -147,7 +148,7 @@ export class Engine {
                         orderId = message.data.orderId;
                         cancelMarket = message.data.market;
                     }
-                    const cancelOrderbook = this.orderbooks.find(o => o.ticker() === cancelMarket);
+                    const cancelOrderbook = this.orderbooks.find(o => o.market() === cancelMarket);
                     const quoteAsset = cancelMarket.split("_")[1];
                     if (!cancelOrderbook) {
                         throw new Error("No orderbook found");
@@ -167,7 +168,7 @@ export class Engine {
                         //@ts-ignore
                         this.balances.get(order.userId)[BASE_CURRENCY].locked -= leftQuantity;
                         if (price) {
-                            this.sendUpdatedDepthAt(price.toString(), cancelMarket);
+                            this.sendUpdatedDepthAt(price.toString(), cancelMarket, cancelOrderbook.lastTradeId);
                         }
                     } else {
                         const price = cancelOrderbook.cancelAsk(order)
@@ -177,7 +178,7 @@ export class Engine {
                         //@ts-ignore
                         this.balances.get(order.userId)[quoteAsset].locked -= leftQuantity;
                         if (price) {
-                            this.sendUpdatedDepthAt(price.toString(), cancelMarket);
+                            this.sendUpdatedDepthAt(price.toString(), cancelMarket, cancelOrderbook.lastTradeId);
                         }
                     }
 
@@ -193,11 +194,40 @@ export class Engine {
                     console.error("Error processing message:", error);
                 }
             }
+                break;
+            case GET_TICKER: {
+                try {
+                    const { market } = message.data;
+                    const orderbook = this.orderbooks.find(orderbook => orderbook.market() === market);
+                    const currentTicker = orderbook?.getTickerPayload();
+                    if (currentTicker) {
+                        RedisManager.getInstance().sendToApi(clientId, {
+                            type: "TICKER_FETCHED",
+                            payload: {
+                                symbol: market,
+                                priceChange: currentTicker.priceChange,
+                                priceChangePercent: currentTicker.priceChangePercent,
+                                lastPrice: currentTicker.lastPrice,
+                                high: currentTicker.highPrice,
+                                low: currentTicker.lowPrice,
+                                volume: currentTicker.volume,
+                                quoteVolume: currentTicker.quoteVolume,
+                                firstPrice: currentTicker.openPrice,
+                                trades: orderbook?.lastTradeId.toString() as string,
+                            }
+                        });
+                    }
+                } catch (error) {
+                    console.error("Error processing message:", error);
+
+                }
+            }
+                break;
         }
     }
 
     createOrder(market: string, side: 'buy' | 'sell', price: string, quantity: string, userId: string) {
-        const orderbook = this.orderbooks.find(orderbook => orderbook.ticker() === market);
+        const orderbook = this.orderbooks.find(orderbook => orderbook.market() === market);
         if (!orderbook) {
             throw new Error("Orderbook not found");
         }
@@ -224,6 +254,11 @@ export class Engine {
         this.updateBalances(userId, baseAsset, quoteAsset, side, fills, executedQty);
         this.createDbTrades(fills, market, userId);
         this.updateDbOrder(order, executedQty, fills, market);
+        // Broadcast depth updates for all affected prices
+        const affectedPrices = new Set<string>();
+        affectedPrices.add(order.price.toString());
+        fills.forEach(fill => affectedPrices.add(fill.price.toString()));
+        affectedPrices.forEach(price => this.sendUpdatedDepthAt(price, market, orderbook.lastTradeId));
         return {
             orderId: order.orderId,
             executedQty,
@@ -291,8 +326,8 @@ export class Engine {
         }
     }
 
-    sendUpdatedDepthAt(price: string, market: string) {
-        const orderbook = this.orderbooks.find(o => o.ticker() === market);
+    sendUpdatedDepthAt(price: string, market: string, id: number) {
+        const orderbook = this.orderbooks.find(o => o.market() === market);
         if (!orderbook) {
             return;
         }
@@ -305,6 +340,8 @@ export class Engine {
             data: {
                 a: updatedAsks.length ? updatedAsks : [[price, "0"]],
                 b: updatedBids.length ? updatedBids : [[price, "0"]],
+                id: id,
+                E: Date.now(),
                 e: "depth"
             }
         });
@@ -379,7 +416,7 @@ export class Engine {
             }
         });
 
-        this.balances.set("5", {
+        this.balances.set("3", {
             [BASE_CURRENCY]: {
                 available: 10000000,
                 locked: 0

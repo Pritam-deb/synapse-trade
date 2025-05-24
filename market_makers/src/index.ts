@@ -1,10 +1,10 @@
 import axios from "axios";
 
 const BASE_URL = "http://localhost:3000";
-const TOTAL_BIDS = 6;
-const TOTAL_ASK = 6;
+const TOTAL_BIDS = 15;
+const TOTAL_ASK = 15;
 const MARKET = "USDC_INR";
-const USER_ID = ["1", "2", "5"];
+const USER_ID = ["1", "2", "3"];
 
 async function main() {
     const price = 1000 + Math.random() * 10;

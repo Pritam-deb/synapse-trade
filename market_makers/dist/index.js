@@ -14,10 +14,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const axios_1 = __importDefault(require("axios"));
 const BASE_URL = "http://localhost:3000";
-const TOTAL_BIDS = 6;
-const TOTAL_ASK = 6;
+const TOTAL_BIDS = 15;
+const TOTAL_ASK = 15;
 const MARKET = "USDC_INR";
-const USER_ID = ["1", "2", "5"];
+const USER_ID = ["1", "2", "3"];
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         const price = 1000 + Math.random() * 10;
@@ -29,7 +29,6 @@ function main() {
         const cancelledAsks = yield cancelAsksLessThan(openOrders.data, price);
         let bidsToAdd = TOTAL_BIDS - totalBids - cancelledBids;
         let asksToAdd = TOTAL_ASK - totalAsks - cancelledAsks;
-        console.log("Bids to add: ", bidsToAdd, "Asks to add: ", asksToAdd);
         while (bidsToAdd > 0 || asksToAdd > 0) {
             if (bidsToAdd > 0) {
                 const res = yield axios_1.default.post(`${BASE_URL}/order/create`, {
@@ -39,7 +38,6 @@ function main() {
                     side: "buy",
                     userId: getRandomUserId()
                 });
-                console.log("Bids added: ", res.data);
                 if (res.data.orderId !== '') {
                     bidsToAdd--;
                 }
@@ -52,12 +50,10 @@ function main() {
                     side: "sell",
                     userId: getRandomUserId()
                 });
-                console.log("Asks added: ", res.data);
                 if (res.data.orderId !== '') {
                     asksToAdd--;
                 }
             }
-            console.log("Bids to add: ", bidsToAdd, "Asks to add: ", asksToAdd);
             yield new Promise(resolve => setTimeout(resolve, 1000));
         }
         yield new Promise(resolve => {

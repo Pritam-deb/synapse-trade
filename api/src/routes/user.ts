@@ -7,9 +7,6 @@ import UserService from "../services/user";
 import { v4 as uuidv4 } from 'uuid';
 import { authenticate } from "../middleware/auth";
 
-const JWT_SECRET = process.env.JWT_SECRET || "secret";
-const JWT_EXPIRATION = process.env.JWT_EXPIRATION || "1d";
-
 export const userRouter = Router();
 
 userRouter.get("/me", authenticate, async (req, res) => {
@@ -31,7 +28,7 @@ userRouter.get("/me", authenticate, async (req, res) => {
     });
 });
 
-userRouter.get("/balance", async (req, res) => {
+userRouter.get("/balance", authenticate, async (req, res) => {
     const response = await RedisManager.getInstance().sendAndAwait({
         type: USER_BALANCE,
         data: {

@@ -1,4 +1,4 @@
-import { Ticker } from "./types";
+import { Ticker, Depth } from "./types";
 
 // export const BASE_URL = "wss://ws.backpack.exchange/"
 export const BASE_URL = "ws://localhost:3001"
@@ -51,19 +51,14 @@ export class SignalingManager {
                         callback(newTicker);
                     }
                     if (type === "depth") {
-                        // const newTicker: Partial<Ticker> = {
-                        //     lastPrice: message.data.c,
-                        //     high: message.data.h,
-                        //     low: message.data.l,
-                        //     volume: message.data.v,
-                        //     quoteVolume: message.data.V,
-                        //     symbol: message.data.s,
-                        // }
-                        // console.log(newTicker);
-                        // callback(newTicker);
-                        const updatedBids = message.data.b;
-                        const updatedAsks = message.data.a;
-                        callback({ bids: updatedBids, asks: updatedAsks });
+                        const newDepth: Partial<Depth> = {
+                            asks: message.data.a,
+                            bids: message.data.b,
+                            lastUpdateId: message.data.id,
+                            timestamp: message.data.E
+                        }
+                        console.log(newDepth);
+                        callback(newDepth);
                     }
                 });
             }

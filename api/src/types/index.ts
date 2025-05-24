@@ -55,6 +55,28 @@ export type MessageFromOrderbook =
                 }
             }
         }
+    } |
+    {
+        type: "TICKER_FETCHED",
+        payload: {
+            symbol: string,
+            priceChange: string,
+            priceChangePercent: string,
+            lastPrice: string,
+            high: string,
+            low: string,
+            volume: string,
+            quoteVolume: string,
+            firstPrice: string,
+            trades: string
+        }
+    } |
+    {
+        type: "ORDER_REJECTED",
+        payload: {
+            orderId: string,
+            reason: string
+        }
     }
 
 //user balance

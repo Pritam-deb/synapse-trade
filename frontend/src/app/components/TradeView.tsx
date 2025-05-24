@@ -11,7 +11,7 @@ export function TradeView({ market }: { market: string }) {
     try {
       klineData = await getKLines(
         market,
-        "1h",
+        "1m",
         Math.floor((new Date().getTime() - 1000 * 60 * 60 * 24 * 7) / 1000),
         Math.floor(new Date().getTime() / 1000)
       );

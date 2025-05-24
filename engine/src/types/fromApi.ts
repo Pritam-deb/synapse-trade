@@ -3,6 +3,7 @@ export const GET_OPEN_ORDERS = 'GET_OPEN_ORDERS'
 export const CREATE_ORDER = 'CREATE_ORDER';
 export const CANCEL_ORDER = "CANCEL_ORDER";
 export const USER_BALANCE = 'USER_BALANCE';
+export const GET_TICKER = 'GET_TICKER';
 export type MessageFromApi =
     {
         type: typeof CREATE_ORDER,
@@ -38,5 +39,11 @@ export type MessageFromApi =
         data: {
             market: string,
             orderId: string,
+        }
+    } |
+    {
+        type: typeof GET_TICKER,
+        data: {
+            market: string,
         }
     }

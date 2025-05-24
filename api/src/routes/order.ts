@@ -1,6 +1,7 @@
 import { RedisManager } from "../RedisManager";
 import { Router } from "express";
 import { GET_OPEN_ORDERS, CREATE_ORDER, CANCEL_ORDER } from "../types";
+import { authenticate } from "../middleware/auth";
 
 export const orderRouter = Router();
 

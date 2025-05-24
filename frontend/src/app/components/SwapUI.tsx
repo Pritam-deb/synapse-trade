@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { postOrder } from "../utils/httpClients"; // Adjust path if needed
 
 export function SwapUI({ market }: { market: string }) {
@@ -8,6 +9,22 @@ export function SwapUI({ market }: { market: string }) {
   const [activeTab, setActiveTab] = useState("buy");
   const [type, setType] = useState("limit");
   const [loading, setLoading] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
+  }, []);
+
+  const getCurrentFullPath = () => {
+    // For App Router: Combine pathname and searchParams
+    const currentPath = pathname;
+    const queryString = searchParams.toString();
+    return queryString ? `${currentPath}?${queryString}` : currentPath;
+  };
 
   const handleSubmit = async () => {
     if (!price || !quantity) return;
@@ -182,19 +199,34 @@ export function SwapUI({ market }: { market: string }) {
               </div>
             )}
           </div>
-          <button
-            type="button"
-            onClick={handleSubmit}
-            disabled={loading}
-            className={`font-semibold focus:ring-blue-200 focus:none focus:outline-none text-center h-12 rounded-xl text-base px-4 py-2 my-4 active:scale-98 ${
-              activeTab === "buy"
-                ? "bg-green-500 text-green-950"
-                : "bg-red-500 text-red-950"
-            }`}
-            data-rac=""
-          >
-            {loading ? "Placing..." : activeTab === "buy" ? "Buy" : "Sell"}
-          </button>
+          {isLoggedIn ? (
+            <button
+              type="button"
+              onClick={handleSubmit}
+              disabled={loading}
+              className={`font-semibold focus:ring-blue-200 focus:none focus:outline-none text-center h-12 rounded-xl text-base px-4 py-2 my-4 active:scale-98 ${
+                activeTab === "buy"
+                  ? "bg-green-500 text-green-950"
+                  : "bg-red-500 text-red-950"
+              }`}
+              data-rac=""
+            >
+              {loading ? "Placing..." : activeTab === "buy" ? "Buy" : "Sell"}
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => {
+                const redirectPath = getCurrentFullPath();
+                router.push(
+                  `/signin?redirectPath=${encodeURIComponent(redirectPath)}`
+                );
+              }}
+              className="font-semibold bg-accentBlue text-white h-12 rounded-xl text-base px-4 py-2 my-4"
+            >
+              Sign in to trade
+            </button>
+          )}
           <div className="flex justify-between flex-row mt-1">
             <div className="flex flex-row gap-2">
               {type === "limit" && (

@@ -17,13 +17,13 @@ export type MessageToApi =
         payload: {
             orderId: string,
             executedQty: number,
-            fills: 
-                {
-                    price: string,
-                    qty: number,
-                    tradeId: number,
-                } []
-            
+            fills:
+            {
+                price: string,
+                qty: number,
+                tradeId: number,
+            }[]
+
         }
     } |
     {
@@ -51,5 +51,20 @@ export type MessageToApi =
                     locked: number
                 }
             }
+        }
+    } |
+    {
+        type: "TICKER_FETCHED",
+        payload: {
+            symbol: string,
+            priceChange: string,
+            priceChangePercent: string,
+            lastPrice: string,
+            high: string,
+            low: string,
+            volume: string,
+            quoteVolume: string,
+            firstPrice: string,
+            trades: string
         }
     }

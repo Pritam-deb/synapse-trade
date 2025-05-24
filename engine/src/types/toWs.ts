@@ -17,6 +17,8 @@ export type DepthUpdateMessage = {
     data: {
         b?: [string, string][],
         a?: [string, string][],
+        id: number,
+        E: number,
         e: "depth"
     }
 }

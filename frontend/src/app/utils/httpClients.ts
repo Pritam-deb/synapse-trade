@@ -8,6 +8,39 @@ const api = axios.create({
     },
 });
 
+const authApi = axios.create({
+    baseURL: "http://localhost:3000", // Point to your Next.js app
+    headers: {
+        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+    },
+})
+
+export const signin = async (email: string, password: string): Promise<any> => {
+    const response = await api.post("/user/signin", {
+        email,
+        password,
+    });
+    return response.data;
+}
+
+export const signup = async (
+    email: string,
+    password: string,
+    username: string
+): Promise<any> => {
+    const response = await api.post("/user/signup", {
+        email,
+        password,
+        username,
+    });
+    return response.data;
+};
+
+export const signout = async (): Promise<any> => {
+    const response = await authApi.post("/user/signout");
+    return response.data;
+}
 
 export const postOrder = async (
     market: string,
@@ -16,7 +49,7 @@ export const postOrder = async (
     quantity: string,
     userId: string
 ): Promise<any> => {
-    const response = await api.post("/order/create", {
+    const response = await authApi.post("/order/create", {
         market,
         side,
         price,
@@ -52,8 +85,8 @@ export const getTrades = async (market: string, limit?: number): Promise<Trade[]
 }
 
 export const getKLines = async (market: string, interval: string, startTime: number, endTime?: number): Promise<KLine[]> => {
-    // const response = await axios.get(`/api/backpack/klines?symbol=${market}&interval=${interval}&startTime=${startTime}${endTime ? `&endTime=${endTime}` : ""}`);
-    const response = await api.get(`/kline?interval=1m&startTime=1747094400&endTime=1747267200&market=USDC_INR`);
+    const response = await api.get(`/kline?symbol=${market}&interval=${interval}&startTime=${startTime}${endTime ? `&endTime=${endTime}` : ""}`);
+    // const response = await api.get(`/kline?interval=1m&startTime=1747976400&endTime=1748005200&market=USDC_INR`);
     return response.data;
 }
 

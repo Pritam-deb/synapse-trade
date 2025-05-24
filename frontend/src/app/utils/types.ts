@@ -12,6 +12,7 @@ export interface Ticker {
 }
 
 export interface Depth {
+    // [string, string][]
     "asks": Array<Array<string>>,
     "bids": Array<Array<string>>,
     "lastUpdateId": string,

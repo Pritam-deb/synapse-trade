@@ -35,4 +35,10 @@ export type MessageToEngine =
         data: {
             userId: string,
         }
+    } |
+    {
+        type: 'GET_TICKER',
+        data: {
+            market: string,
+        }
     }
